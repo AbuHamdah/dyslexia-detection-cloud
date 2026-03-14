@@ -1,0 +1,36 @@
+# ============================================================================
+# Render.com Dockerfile — Combined API + Dashboard
+# ============================================================================
+# Render free tier runs one service per Dockerfile.
+# This combines FastAPI (API) + Streamlit (Dashboard) behind a process manager.
+# ============================================================================
+FROM python:3.10-slim
+
+WORKDIR /app
+
+# System deps
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    gcc g++ supervisor nginx && rm -rf /var/lib/apt/lists/*
+
+# Python deps — use tensorflow-cpu to save memory on free tier
+COPY requirements.render.txt .
+RUN pip install --no-cache-dir -r requirements.render.txt
+
+# Copy project
+COPY . ./cloud_system/
+
+# Create directories
+RUN mkdir -p cloud_system/saved_models cloud_system/logs cloud_system/uploads
+
+# Copy config files
+COPY deploy/render/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
+COPY deploy/render/nginx.conf /etc/nginx/sites-enabled/default
+
+# Remove default nginx config
+RUN rm -f /etc/nginx/sites-enabled/default.bak 2>/dev/null || true
+
+# Expose port (Render uses $PORT, default 10000)
+EXPOSE 10000
+
+# Start supervisor (manages nginx + api + dashboard)
+CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]

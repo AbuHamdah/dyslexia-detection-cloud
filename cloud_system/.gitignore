@@ -1,0 +1,14 @@
+__pycache__/
+*.pyc
+*.pyo
+.env
+uploads/*
+!uploads/.gitkeep
+logs/*
+!logs/.gitkeep
+saved_models/*.h5
+!saved_models/.gitkeep
+*.egg-info/
+dist/
+build/
+.mypy_cache/

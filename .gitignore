@@ -1,0 +1,46 @@
+# ── Python ──
+__pycache__/
+*.py[cod]
+*.egg-info/
+.eggs/
+dist/
+build/
+*.egg
+
+# ── Virtual environment ──
+.venv/
+venv/
+env/
+
+# ── IDE ──
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# ── OS ──
+.DS_Store
+Thumbs.db
+
+# ── Large data (do NOT upload to GitHub) ──
+ds003126_raw/
+ds006239_raw/
+
+# ── Logs ──
+*.log
+*.txt
+!requirements.txt
+!README.txt
+cloud_system/logs/*.log
+cloud_system1/logs/*.log
+
+# ── Uploads ──
+cloud_system/uploads/
+cloud_system1/uploads/
+
+# ── Environment files ──
+.env
+*.pem
+
+# ── Docker ──
+docker-compose.override.yml

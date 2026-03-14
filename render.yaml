@@ -1,0 +1,25 @@
+# ============================================================================
+# Render Blueprint — render.yaml
+# Place this in the ROOT of your GitHub repo
+# Render auto-detects this file and configures services
+# ============================================================================
+services:
+  - type: web
+    name: dyslexia-detection
+    runtime: docker
+    dockerfilePath: cloud_system/deploy/render/Dockerfile.render
+    dockerContext: cloud_system
+    plan: free
+    region: oregon
+    healthCheckPath: /health
+    envVars:
+      - key: APP_NAME
+        value: Dyslexia Detection Cloud System
+      - key: DEBUG
+        value: "false"
+      - key: SECRET_KEY
+        generateValue: true
+      - key: CORS_ORIGINS
+        value: '["*"]'
+      - key: TF_CPP_MIN_LOG_LEVEL
+        value: "2"

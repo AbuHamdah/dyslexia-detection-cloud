@@ -1,0 +1,48 @@
+version: "3.8"
+
+services:
+  # ── FastAPI Backend ──
+  api:
+    build:
+      context: ../..
+      dockerfile: cloud_system/docker/Dockerfile
+    container_name: dyslexia-api
+    ports:
+      - "8000:8000"
+    volumes:
+      - ../saved_models:/app/cloud_system/saved_models
+      - ../logs:/app/cloud_system/logs
+      - ../uploads:/app/cloud_system/uploads
+    environment:
+      - APP_NAME=Dyslexia Detection Cloud System
+      - MODEL_DIR=/app/saved_models
+      - LOG_DIR=/app/logs
+      - UPLOAD_DIR=/app/uploads
+    restart: unless-stopped
+
+  # ── Streamlit Dashboard ──
+  dashboard:
+    build:
+      context: ../..
+      dockerfile: cloud_system/docker/Dockerfile.dashboard
+    container_name: dyslexia-dashboard
+    ports:
+      - "8501:8501"
+    depends_on:
+      - api
+    environment:
+      - API_BASE=http://api:8000
+    restart: unless-stopped
+
+  # ── NGINX Reverse Proxy ──
+  nginx:
+    image: nginx:alpine
+    container_name: dyslexia-nginx
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf
+    depends_on:
+      - api
+      - dashboard
+    restart: unless-stopped
