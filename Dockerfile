@@ -16,11 +16,14 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 COPY cloud_system/deploy/render/requirements.render.txt ./requirements.txt
 RUN pip install --no-cache-dir -r requirements.txt
 
+# Create directories first (COPY will merge into them)
+RUN mkdir -p cloud_system/saved_models cloud_system/logs cloud_system/uploads
+
 # Copy project into cloud_system/ subdir so imports resolve
 COPY cloud_system/ ./cloud_system/
 
-# Create directories
-RUN mkdir -p cloud_system/saved_models cloud_system/logs cloud_system/uploads
+# Verify models are present in the image
+RUN echo "=== Models in saved_models ===" && ls -la cloud_system/saved_models/ && echo "=== Done ==="
 
 # Copy supervisor & nginx config
 COPY cloud_system/deploy/render/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
