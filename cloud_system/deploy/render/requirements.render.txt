@@ -1,5 +1,5 @@
 # ── Deep Learning (CPU-only for free tier — saves ~1GB RAM) ──
-tensorflow-cpu>=2.12.0
+tensorflow-cpu==2.20.0
 numpy>=1.23.0
 scipy>=1.10.0
 scikit-learn>=1.2.0
