@@ -186,6 +186,18 @@ def main():
     preds3 = m3.predict([X_mri[:4], X_fmri[:4]], verbose=0).flatten()
     print(f"✅ Saved {p3}  (sample preds: {np.round(preds3, 3)})\n")
 
+    # ── 4) HM Fusion (same architecture, separate weights) ──
+    print("Training HM Fusion on synthetic features...")
+    m4 = build_agentic_fusion(mri_feat, fmri_feat,
+                               mri_shape=mri_shape,
+                               fmri_shape=fmri_shape)
+    m4.fit([X_mri, X_fmri], y_mri, epochs=TRAIN_EPOCHS,
+           batch_size=BATCH_SIZE, verbose=1)
+    p4 = out / settings.FUSION_HM_MODEL_FILE
+    m4.save(str(p4))
+    preds4 = m4.predict([X_mri[:4], X_fmri[:4]], verbose=0).flatten()
+    print(f"✅ Saved {p4}  (sample preds: {np.round(preds4, 3)})\n")
+
     print(f"All demo models saved to {out}")
     print("Models are now trained and will produce varied predictions ≠ 50%.")
 
